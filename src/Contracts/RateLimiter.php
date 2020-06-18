@@ -23,7 +23,7 @@ interface RateLimiter
      * @param  int  $decaySeconds
      * @return int
      */
-    public function hit($key, $decaySeconds = 60);
+    public function hit($key, $decaySeconds);
 
     /**
      * Get the number of seconds until the "key" is accessible again.

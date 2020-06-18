@@ -113,7 +113,7 @@ class Throttler
         $policies = $this->mergerPoliciesFromConfig();
 
         foreach ($policies as $key => $policy) {
-            if ($limiter->tooManyAttempts($this->composeKey($key), $policy[0])) {
+            if ($limiter->tooManyAttempts($this->composeKey($key), (int) $policy[0])) {
                 $flag = false;
                 if ($failure) {
                     $failure($policy[0], $limiter->availableIn($this->composeKey($key)));
@@ -124,7 +124,7 @@ class Throttler
 
         if ($flag) {
             foreach ($policies as $key => $policy) {
-                $limiter->hit($this->composeKey($key), $policy[1]);
+                $limiter->hit($this->composeKey($key), (int) $policy[1]);
             }
             $callback();
         }
