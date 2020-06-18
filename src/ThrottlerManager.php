@@ -3,6 +3,7 @@
 
 namespace Jiaxincui\Throttler;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use jiaxincui\Throttler\Contracts\RateLimiter as RateLimitContract;
 use Illuminate\Container\Container;
 use Jiaxincui\Throttler\Exceptions\ThrottlerException;
@@ -41,7 +42,7 @@ class ThrottlerManager
     /**
      * @return RateLimitContract|mixed|object
      * @throws ThrottlerException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     protected function limiter()
     {
@@ -68,11 +69,11 @@ class ThrottlerManager
     }
 
     /**
-     * @param string $maxAttempts
-     * @param string $decaySeconds
+     * @param int $maxAttempts
+     * @param int $decaySeconds
      * @return $this
      */
-    public function addPolicy(string $maxAttempts, string $decaySeconds)
+    public function addPolicy($maxAttempts, $decaySeconds)
     {
         $this->policies[] = [$maxAttempts, $decaySeconds];
         return $this;
@@ -101,7 +102,7 @@ class ThrottlerManager
      * @param callable $callback
      * @param callable|null $failure
      * @throws ThrottlerException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function then(callable $callback, callable $failure = null)
     {
@@ -131,7 +132,7 @@ class ThrottlerManager
 
     /**
      * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     protected function mergerPoliciesFromConfig()
     {
@@ -141,7 +142,7 @@ class ThrottlerManager
     /**
      * @param $policyKey
      * @return string
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     protected function composeKey($policyKey)
     {
