@@ -24,8 +24,8 @@ class ThrottlerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ThrottlerManager::class, function ($app) {
-            return new ThrottlerManager($app);
+        $this->app->singleton(Throttler::class, function ($app) {
+            return new Throttler($app);
         });
     }
 }

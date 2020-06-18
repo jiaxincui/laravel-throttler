@@ -13,7 +13,7 @@ composer require jiaxincui/laravel-throttler
 
 ## 配置文件
 
-此命令将配置文件copy至 `config/throttler.php'
+此命令将配置文件copy至`config/throttler.php`
 
 ```terminal
 php artisan vendor:publish --provider="Jiaxincui\Throttler\ThrottlerServiceProvider"
@@ -49,11 +49,11 @@ php artisan vendor:publish --provider="Jiaxincui\Throttler\ThrottlerServiceProvi
 
 ### 使用
 
-一般情况下你只需要在配置文件 `config/throttler.php' 设置策略即可。
+一般情况下你只需要在配置文件 `config/throttler.php` 设置策略即可。
 
 
 ```php
-use Jiaxincui\Throttler\Throttler;
+use Jiaxincui\Throttler\Facades\Throttler;
 
 Throttler::throttle($request->ip)
     ->then(function() {
@@ -65,7 +65,7 @@ Throttler::throttle($request->ip)
     });
 
 // 使用其他限速方案
-Throttler::guard('custom1')
+Throttler::guard('custom')
     ->throttle($request->ip)
     ->then(function() {
         // 通过
@@ -79,7 +79,7 @@ Throttler::guard('custom1')
 如果你要在运行时设置限制策略，可以像下面这样做：
 
 ```php
-use Jiaxincui\Throttler\Throttler;
+use Jiaxincui\Throttler\Facades\Throttler;
 
 Throttler::throttle($user->id)
     ->addPolicy(5, 1)
@@ -111,10 +111,45 @@ Throttler::throttle($user->id)
     });
 ```
 
+你也可以在控制器的构造方法里通过依赖注入使用它
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Jiaxincui\Throttler\Throttler;
+
+class UserController extends Controller
+{
+    protected $throttler;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param Throttler $throttler
+     */
+    public function __construct(Throttler $throttler)
+    {
+        $this->throttler = $throttler;
+    }
+    public function index(Request $request)
+    {
+        $this->throttler->throttle($request->ip)
+            ->then(function () {
+              // 通过
+            }, function ($maxAttempts, $decaySeconds) {
+              // 未通过
+}           );
+    }
+
+}
+```
+
 ## Api
 
 | 方法 | 返回 | 说明 |
-| - | - | - |
+| :-- | :-- | :-- |
 | `throttle(string $key)` | `$this` | 传入`$key`创建一个限速器 |
 | `guard(string $guradName)` | `$this` | 应用一个限速方案 |
 | `addPolicy(int $maxAttempts, int $decaySeconds )` | `$this` | 添加一个限速策略 |
